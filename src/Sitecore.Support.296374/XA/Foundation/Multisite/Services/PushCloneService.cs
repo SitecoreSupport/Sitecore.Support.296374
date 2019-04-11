@@ -116,11 +116,14 @@ namespace Sitecore.Support.XA.Foundation.Multisite.Services
           break;
         }
 
-        var newItemVersion = current2.Database.GetItem(current2.ID, latestVersion.Language).Versions.AddVersion();
-        newItemVersion.Editing.BeginEdit();
-        newItemVersion[FieldIDs.Source] = uri.ToString();
-        newItemVersion[FieldIDs.SourceItem] = uri.ToString(false);
-        newItemVersion.Editing.EndEdit();
+        using (new SecurityDisabler())
+        {
+          var newItemVersion = current2.Database.GetItem(current2.ID, latestVersion.Language).Versions.AddVersion();
+          newItemVersion.Editing.BeginEdit();
+          newItemVersion[FieldIDs.Source] = uri.ToString();
+          newItemVersion[FieldIDs.SourceItem] = uri.ToString(false);
+          newItemVersion.Editing.EndEdit();
+        }
       }
     }
 
